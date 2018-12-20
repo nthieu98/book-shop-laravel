@@ -45,7 +45,7 @@ class LoginController extends Controller
         ];
         return $data;
     	if(Auth::attempt($data)){
-    		return view('/');
+    		return redirect()->url('/welcome');
     	}else{
     		return view('/login');
     	}

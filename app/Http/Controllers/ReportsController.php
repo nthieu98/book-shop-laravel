@@ -63,13 +63,23 @@ class ReportsController extends Controller
             'productId'=>$data['product_id'], 'quantity'=>$data['quantity'],'price'=>$data['price'], 
             'totalPrice'=>($data['quantity']*$data['price'])]);
             return redirect()->back()->with('flash_message_success', 'Report has been updated successfully');
-        }
-
+        } 
         $reportDetails = Report::where(['reportId'=>$id])->first();
+        $types = array('Export', 'Import');
+        $types_drop_down = "<option value='' disabled>Select</option>";
+        foreach($types as $type){
+            if($type==$reportDetails->reportType){
+                $selected = "selected";
+            }else{
+                $selected = "";
+            }
+            $types_drop_down .= "<option value='".$type."' ".$selected.">".$type."</option>";
+        }
+       
         // "<pre>"; print_r($reportDetails);
         // $levels = Category::where(['categoryId'=>0])->get();
         // return $levels;
-        return view('admin.reports.edit_report')->with(compact('reportDetails'));
+        return view('admin.reports.edit_report')->with(compact('reportDetails','types_drop_down' ));
     }
 
     public function deleteReport($id = null){
@@ -78,7 +88,6 @@ class ReportsController extends Controller
     }
 
     public function viewReports(){ 
-
         $reports = Report::get();
         return view('admin.reports.view_reports')->with(compact('reports'));
     }

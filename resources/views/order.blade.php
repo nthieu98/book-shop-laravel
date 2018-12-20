@@ -47,7 +47,7 @@
 	@endguest
 	</strong></div>
 	<div class="span6">
-	@guest
+  @guest
 	<div class="pull-right">
 		<span class="btn btn-mini">0</span>
 		<a ><span class="">VND</span></a>
@@ -100,108 +100,82 @@
 </div>
 <!-- Header End====================================================================== -->
 <div class = "container">
-	<section id="form">
-		<div class="page-header">
-			</div>
-		@if(Session::has('flash_message_error'))
-						<div class="alert alert-error alert-block">
-								<button type="button" class="close" data-dismiss="alert">×</button> 
-										<strong>{!! session('flash_message_error') !!}</strong>
-						</div>
-				@endif   
-				@if(Session::has('flash_message_success'))
-						<div class="alert alert-success alert-block">
-								<button type="button" class="close" data-dismiss="alert">×</button> 
-										<strong>{!! session('flash_message_success') !!}</strong>
-						</div>
-				@endif
-		<div class="row-fluid">
-		<div class="span9">
-    <ul class="breadcrumb">
-    <li><a href="index.html">Home</a> <span class="divider">/</span></li>
-    <li><a href="products.html">Products</a> <span class="divider">/</span></li>
-    <li class="active">product Details</li>
-    </ul>	
-	<div class="row">	  
-			<div id="gallery" class="span3">
-            <a href="{{ asset('/images/backend_images/product/medium/'.$product->productImage) }}" title="{{$product->productName}}">
-				<img src="{{ asset('/images/backend_images/product/large/'.$product->productImage) }}" style="width:100%" alt="{{$product->productName}}">
-            </a>
-			 <div class="btn-toolbar">
-			  
-			</div>
-			</div>
-			<div class="span6">
-				<h3>{{$product->productName}} </h3>
-				<hr class="soft">
-				<form class="form-horizontal qtyFrm" method = "post" action="{{url('/product/'.$product->productId)}}">
-				 	{{csrf_field()}}
-				  <div class="control-group">
-					<label class="control-label"><span>{{$product->productPrice}} đ</span></label>
-					<input type="hidden" id ="name" name = "name" value = "{{$product->productName}}">
-					<input type="hidden" id ="price" name = "price" value = "{{$product->productPrice}}">
-					<input type="hidden" id ="productId" name = "productId" value = "{{$product->productId}}">
-					<div class="controls">
-					<input type="number" class="span6" name = "quantity" id = "quantity" placeholder="Quantity"value = "0">
-					</div>
-				  </div>
-					@guest
-						<button type="" class="btn btn-large btn-primary pull-right"> Add to cart <i class=" icon-shopping-cart"></i></button>
-					@else
-						<button type="submit" class="btn btn-large btn-primary pull-right"> Add to cart <i class=" icon-shopping-cart"></i></button>
-					@endguest
-				</form>
-				
-				<hr class="soft">
-				<h4>{{$product->productQuantity}} items in stock</h4>
-				<hr class="soft clr">
-				<p>
-				Details
-				</p>
-				<a class="btn btn-small pull-right" href="">More Details</a>
-				<br class="clr">
-			<a href="#" name="detail"></a>
-			<hr class="soft">
-			</div>
-			
-			
-
-	</div>
-</div>
-	</section>
+<section id="form">
+  <div class="page-header">
+      <h3>Order Info</h3>
+    </div>
+  @if(Session::has('flash_message_error'))
+          <div class="alert alert-error alert-block">
+              <button type="button" class="close" data-dismiss="alert">×</button> 
+                  <strong>{!! session('flash_message_error') !!}</strong>
+          </div>
+      @endif   
+      @if(Session::has('flash_message_success'))
+          <div class="alert alert-success alert-block">
+              <button type="button" class="close" data-dismiss="alert">×</button> 
+                  <strong>{!! session('flash_message_success') !!}</strong>
+          </div>
+      @endif
+<div class="row-fluid">
+  
+<div class = "span8">
+  <form class="form-horizontal" method = "post" action="{{ url('order/'.$user->id) }}">{{csrf_field()}}
+    <fieldset>
+    <div class="control-group">
+        <label for="address" class="control-label">Address</label> 
+        <div class="controls">
+          <input id="address" name="address" placeholder="Address" class="input-xlarge" type="text" value = "{{$user->userAddress}}" required>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="price" class="control-label">Price </label> 
+        <div class="controls">
+          <input id="price" name="price" class="input-xlarge" required="required" type="text" disabled value = "{{$cartTotal}}">
+          
+        </div>
+      </div>
+      <div class="form-actions">
+          <button name="submit" type="submit" class="btn btn-primary">Order</button>
+      </div>
+    </fieldset>
+  </form>
+  </div>
+  </div>
+</section>
 </div>
 <!-- Footer ================================================================== -->
-<div  id="footerSection">
+	<div  id="footerSection">
 	<div class="container">
 		<div class="row">
 			<div class="span3">
-				<h5>ABOUT BOOK SHOP</h5>
-				<a >ABOUT US</a>
-				<a >OUR CAREERS</a> 
-				<a >OUR POLICIES</a> 
-
+				<h5>ACCOUNT</h5>
+				<a href="login.html">YOUR ACCOUNT</a>
+				<a href="login.html">PERSONAL INFORMATION</a> 
+				<a href="login.html">ADDRESSES</a> 
+				<a href="login.html">DISCOUNT</a>  
+				<a href="login.html">ORDER HISTORY</a>
 			 </div>
 			<div class="span3">
 				<h5>INFORMATION</h5>
-				<a >CONTACT</a>  
-				<a >REGISTRATION</a>  
-				<a >LEGAL NOTICE</a>  
-				<a >TERMS AND CONDITIONS</a> 
-				<a >FAQ</a>
+				<a href="contact.html">CONTACT</a>  
+				<a href="register.html">REGISTRATION</a>  
+				<a href="legal_notice.html">LEGAL NOTICE</a>  
+				<a href="tac.html">TERMS AND CONDITIONS</a> 
+				<a href="faq.html">FAQ</a>
 			 </div>
 			<div class="span3">
 				<h5>OUR OFFERS</h5>
-				<a >NEW PRODUCTS</a> 
-				<a >TOP SELLERS</a>
-				<a >SPECIAL OFFERS</a>  
-				<a >MANUFACTURERS</a> 
-				<a>SUPPLIERS</a> 
+				<a href="#">NEW PRODUCTS</a> 
+				<a href="#">TOP SELLERS</a>  
+				<a href="special_offer.html">SPECIAL OFFERS</a>  
+				<a href="#">MANUFACTURERS</a> 
+				<a href="#">SUPPLIERS</a> 
 			 </div>
 			<div id="socialMedia" class="span3 pull-right">
-				<h5>SOCIAL MEDIA</h5>
-				<a ><img width="60" height="60" src="{{asset('themes/images/facebook.png')}}" title="facebook" alt="facebook"/></a>
-				<a ><img width="60" height="60" src="{{asset('themes/images/twitter.png')}}" title="twitter" alt="twitter"/></a>
-				<a ><img width="60" height="60" src="{{asset('themes/images/youtube.png')}}" title="youtube" alt="youtube"/></a>
+				<h5>SOCIAL MEDIA </h5>
+				<a href="#"><img width="60" height="60" src="{{asset('themes/images/facebook.png')}}" title="facebook" alt="facebook"/></a>
+				<a href="#"><img width="60" height="60" src="{{asset('themes/images/twitter.png')}}" title="twitter" alt="twitter"/></a>
+				<a href="#"><img width="60" height="60" src="{{asset('themes/images/youtube.png')}}" title="youtube" alt="youtube"/></a>
 			 </div> 
 		 </div>
 		<p class="pull-right">&copy; Book shop</p>

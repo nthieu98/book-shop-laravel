@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Auth;
 use Session;
 use App\Category;
+use App\Product;
+
 
 class CategoryController extends Controller
 {
@@ -63,12 +65,16 @@ class CategoryController extends Controller
     }
 
     public function deleteCategory($id = null){
+        $product = Product::where(['categoryId'=>$id])->first();
+        if(!empty($product)){
+            return redirect()->back()->with('flash_message_error', 'Category has been deleted unsuccessfully');
+        }
+
         Category::where(['categoryId'=>$id])->delete();
         return redirect()->back()->with('flash_message_success', 'Category has been deleted successfully');
     }
 
     public function viewCategories(){ 
-
         $categories = category::get();
         return view('admin.categories.view_categories')->with(compact('categories'));
     }

@@ -27,11 +27,11 @@
             <h5>Add Report</h5>
           </div>
           <div class="widget-content nopadding">
-            <form class="form-horizontal" method="post" action="{{ url('admin/add-report') }}" name="add_report" id="add_report" novalidate="novalidate">{{ csrf_field() }}
+            <form class="form-horizontal" method="post" action="{{ url('admin/add-report') }}" name="add_report" id="add_report" >{{ csrf_field() }}
               <div class="control-group">
                 <label class="control-label">Report Type</label>
                 <div class="controls">
-                  <select name = "report_type" id = "report_type"  style="width:220px;" require>
+                  <select name = "report_type" id = "report_type"  style="width:220px;" required>
                     <option value="Import"> Import </option>
                     <option value="Export"> Export </option>
                   </select>
@@ -41,25 +41,25 @@
               <div class="control-group">
                 <label class="control-label">Date</label>
                 <div class="controls">
-                  <input type="date" name="date" id="date" require>
+                  <input type="date" name="date" id="date" required>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Product Id</label>
                 <div class="controls">
-                  <input type="text" name="productId" id="productId" require>
+                  <input type="text" name="productId" id="productId" required>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Quantity</label>
                 <div class="controls">
-                  <input type="number" name="quantity" id="quantity"class="numberic_value" require>
+                  <input type="number" name="quantity" id="quantity"class="numberic_value" required>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Price</label>
                 <div class="controls">
-                  <input type="number" name="price" id="price"class="numberic_value" require>
+                  <input type="number" name="price" id="price"class="numberic_value" required>
                 </div>
               </div>
               <div class="control-group">

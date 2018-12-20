@@ -50,11 +50,19 @@
 	@endguest
 	</strong></div>
 	<div class="span6">
+	@guest
+	<div class="pull-right">
+		<span class="btn btn-mini">0</span>
+		<a ><span class="">VND</span></a>
+		<a ><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ 0 ] Items in your cart </span> </a> 
+	</div>
+	@else
 	<div class="pull-right">
 		<span class="btn btn-mini">{{$cartTotal}}</span>
-		<a href="product_summary.html"><span class="">VND</span></a>
-		<a href="product_summary.html"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ {{$cartNum}} ] Items in your cart </span> </a> 
+		<a ><span class="">VND</span></a>
+		<a href="{{url('checkout/'.Auth::user()->id) }}"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ {{$cartNum}} ] Items in your cart </span> </a> 
 	</div>
+	@endguest
 	</div>
 </div>
 <!-- Navbar ================================================== -->
@@ -78,15 +86,15 @@
     </form>
     <ul id="topMenu" class="nav pull-right">
 	 <!-- <li class=""><a href="special_offer.html">Specials Offer</a></li> -->
-	 <li class=""><a href="normal.html">Delivery</a></li>
-	 <li class=""><a href="contact.html">Contact</a></li>
 	 @guest
 		<li class=""><a role="button" style="padding-right:0"href="{{ route('register') }}" ><span class="btn btn-large btn-success">Register</span></a><li>
 			<!-- <a role="button" style="padding-right:0"href="{{ route('login') }}" ><span class="btn btn-large btn-success">Register</span></a> -->
 		<li><a role="button" style="padding-right:0"href="{{ route('login') }}" ><span class="btn btn-large btn-success">Login</span></a></li>
 	@else
+		<li class=""><a href="{{ url('/view-order/'.Auth::user()->id ) }}">My Orders</a></li>
+		<li class=""><a href="{{ url('/checkout/'.Auth::user()->id ) }}"> Checkout</a></li>
 		<li class=""><a href="{{ url('/profile/'.Auth::user()->id	) }}">Profile</a></li>
-	 <li class=""><a href="{{ route('logout') }}">Logout</a></li>
+		<li class=""><a href="{{ route('logout') }}">Logout</a></li>
 	@endguest
     </ul>
   </div>
@@ -116,29 +124,58 @@
 				
 				<div>
 						<h3> Total: <span value = "{{$cartTotal}}" id = "total" >{{$cartTotal}}</span> đ</h3>
-						<a class="btn btn-success">Check out</a></h4>
+						<a class="btn btn-success" href="{{url('/order/'.Auth::id())}}">Check out</a></h4>
 				</div>
 				@foreach ($cart as $pro)
-					<form class = "well form-inline">
-						<div class="product">
-							<label>
-								<img src="{{ asset('/images/backend_images/product/medium/'.$pro->productImage) }}" style = "width:200px">
-							</label>
-							<label>
-								<h4>{{$pro->productName}}</h4>
-								<p class="product-description">{{$pro->productName}}</p>
-							</label>
-							<div class="product-price"><p>{{$pro->productPrice}}</p></div>
-							<div class="product-quantity">
-								<p>Quantity: </p><input type="number" value="{{$pro->productQuantity}}" min="1">
+					<form class = "well form-inline" method = "post" action="{{url('/checkout/'.Auth::user()->id )}}">
+						{{csrf_field()}}
+						<input type = "hidden" id = "productId" name = "productId" value = "{{$pro->productId}}">
+						<label style = "width:220px">
+							<img src="{{ asset('/images/backend_images/product/medium/'.$pro->productImage) }}" style = "width:200px">
+						</label>
+						<label style = "width: 250px">
+							<h4>{{$pro->productName}}</h4>
+							<p class="product-description">{{$pro->productPrice}} đ</p>
+						</label>
+						<label style = "width: 350px">
+							<div class="product">
+								<!-- <div class="product-price"><p>{{$pro->productPrice}}</p></div> -->
+								<div class="product-quantity">
+									<!-- <p>{{$pro->currentQuantity}}</p> -->
+									<p>Quantity: </p><input required type="number" id = "quantity" name = "quantity" product-price="{{$pro->productPrice}}" value="{{$pro->productQuantity}}" min="1" max="{{$pro->currentQuantity}}">
+								</div>
+									<p>Total:</p>
+								<div class="product-line-price" type = "hidden">{{$pro->productQuantity*$pro->productPrice}}  đ</div> 
 							</div>
-							<div class="product-line-price" type = "hidden">{{$pro->productQuantity*$pro->productPrice}}</div>
-						</div>
+						</label>
+						<label>
+							<button class="btn btn-primary" type = "submit">Update</button>
+						</label>
+						
 					</form>
 				@endforeach
 			</div>
 		</div>
 		<script>
+			$(function () {
+				$("input").keydown(function () {
+					// Save old value.
+					console.log(this);
+					var max = $(this).attr('max');
+					if (!$(this).val() || (parseInt($(this).val()) <= max && parseInt($(this).val()) >= 0))
+					$(this).data("old", $(this).val());
+				});
+				$("input").keyup(function () {
+					// Check correct, else revert back to old value.
+					console.log(this);
+					var max = $(this).attr('max');
+					if (!$(this).val() || (parseInt($(this).val()) <= max && parseInt($(this).val()) >= 0))
+						;
+					else
+						$(this).val($(this).data("old"));
+				});
+			});
+
 			var fadeTime = 300;
 
 			$('.product-quantity input').keyup(function () {
@@ -170,17 +207,19 @@
 			/* Update quantity */
 			function updateQuantity(quantityInput)
 			{
+				console.log(quantityInput);
 				/* Calculate line price */
 				var productRow = $(quantityInput).parent().parent();
-				console.log(productRow);
-				var price = parseInt(productRow.children('.product-price').text());
+				// console.log(productRow);
+				var price = Number($(quantityInput).attr('product-price'));
+				console.log(price);
 				var quantity = $(quantityInput).val();
 				var linePrice = price * quantity;
 				console.log(linePrice);
 				/* Update line price display and recalc cart totals */
 				productRow.children('.product-line-price').each(function () {
 					$(this).fadeOut(fadeTime, function() {
-						$(this).text(linePrice);
+						$(this).text(linePrice + ' đ');
 						recalculateCart();
 						$(this).fadeIn(fadeTime);
 					});

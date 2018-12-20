@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\User;
+use App\Order;
+use App\OrderDetail;
 use Auth;
 use Validator;
 
@@ -35,7 +37,6 @@ class UsersController extends Controller
                 $user->username = $data['username'];
                 $user->password = Hash::make($data['password']);	
                 $user->email = $data['email'];
-                $user->isAdmin = 0;
                 // $user->expiry_date = $data['expiry_date'];
                 // $user->status = $data['status'];
                 $user->save();	
@@ -133,8 +134,12 @@ class UsersController extends Controller
 	}
 
 	public function deleteUser($id = null){
+        $order = Order::where(['id'=>$id])->first();
+        if(!empty($order)){
+            return redirect()->back()->with('flash_message_error', 'User has been deleted unsuccessfully');
+        }
         User::where(['id'=>$id])->delete();
-        return redirect()->back()->with('flash_message_success', 'Coupon has been deleted successfully');
+        return redirect()->back()->with('flash_message_success', 'User has been deleted successfully');
     }
 
 }

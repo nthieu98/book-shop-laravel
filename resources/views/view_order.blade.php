@@ -102,72 +102,38 @@
 <div class = "container">
 	<section id="form">
 		<div class="page-header">
-			</div>
+			<h3>Order List</h3>
+		</div>
 		@if(Session::has('flash_message_error'))
-						<div class="alert alert-error alert-block">
-								<button type="button" class="close" data-dismiss="alert">×</button> 
-										<strong>{!! session('flash_message_error') !!}</strong>
-						</div>
-				@endif   
-				@if(Session::has('flash_message_success'))
-						<div class="alert alert-success alert-block">
-								<button type="button" class="close" data-dismiss="alert">×</button> 
-										<strong>{!! session('flash_message_success') !!}</strong>
-						</div>
-				@endif
+				<div class="alert alert-error alert-block">
+						<button type="button" class="close" data-dismiss="alert">×</button> 
+								<strong>{!! session('flash_message_error') !!}</strong>
+				</div>
+		@endif   
+		@if(Session::has('flash_message_success'))
+				<div class="alert alert-success alert-block">
+						<button type="button" class="close" data-dismiss="alert">×</button> 
+								<strong>{!! session('flash_message_success') !!}</strong>
+				</div>
+		@endif
 		<div class="row-fluid">
-		<div class="span9">
-    <ul class="breadcrumb">
-    <li><a href="index.html">Home</a> <span class="divider">/</span></li>
-    <li><a href="products.html">Products</a> <span class="divider">/</span></li>
-    <li class="active">product Details</li>
-    </ul>	
-	<div class="row">	  
-			<div id="gallery" class="span3">
-            <a href="{{ asset('/images/backend_images/product/medium/'.$product->productImage) }}" title="{{$product->productName}}">
-				<img src="{{ asset('/images/backend_images/product/large/'.$product->productImage) }}" style="width:100%" alt="{{$product->productName}}">
-            </a>
-			 <div class="btn-toolbar">
-			  
-			</div>
-			</div>
-			<div class="span6">
-				<h3>{{$product->productName}} </h3>
-				<hr class="soft">
-				<form class="form-horizontal qtyFrm" method = "post" action="{{url('/product/'.$product->productId)}}">
-				 	{{csrf_field()}}
-				  <div class="control-group">
-					<label class="control-label"><span>{{$product->productPrice}} đ</span></label>
-					<input type="hidden" id ="name" name = "name" value = "{{$product->productName}}">
-					<input type="hidden" id ="price" name = "price" value = "{{$product->productPrice}}">
-					<input type="hidden" id ="productId" name = "productId" value = "{{$product->productId}}">
-					<div class="controls">
-					<input type="number" class="span6" name = "quantity" id = "quantity" placeholder="Quantity"value = "0">
-					</div>
-				  </div>
-					@guest
-						<button type="" class="btn btn-large btn-primary pull-right"> Add to cart <i class=" icon-shopping-cart"></i></button>
-					@else
-						<button type="submit" class="btn btn-large btn-primary pull-right"> Add to cart <i class=" icon-shopping-cart"></i></button>
-					@endguest
-				</form>
-				
-				<hr class="soft">
-				<h4>{{$product->productQuantity}} items in stock</h4>
-				<hr class="soft clr">
-				<p>
-				Details
-				</p>
-				<a class="btn btn-small pull-right" href="">More Details</a>
-				<br class="clr">
-			<a href="#" name="detail"></a>
-			<hr class="soft">
-			</div>
-			
-			
 
-	</div>
-</div>
+			<div class = "span9">
+				@foreach ($orders as $order)
+					<form class = "well form-inline" method = "post" action="{{url('/checkout/'.Auth::user()->id )}}">
+						{{csrf_field()}}
+						<label style = "width:220px">
+							<h4>Address: {{$order->orderAddress}}</h4>
+							<h4>Status: {{$order->orderStatus}}</h4>
+						</label>
+
+						<label>
+							<a href="{{url('/cancel-order/'.Auth::user()->id.'/'.$order->orderId )}}" class="btn btn-danger" type = "submit">Cancel</a>
+						</label>
+					</form>
+				@endforeach
+			</div>
+		</div>
 	</section>
 </div>
 <!-- Footer ================================================================== -->

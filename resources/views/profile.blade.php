@@ -47,11 +47,19 @@
 	@endguest
 	</strong></div>
 	<div class="span6">
+  @guest
+	<div class="pull-right">
+		<span class="btn btn-mini">0</span>
+		<a ><span class="">VND</span></a>
+		<a ><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ 0 ] Items in your cart </span> </a> 
+	</div>
+	@else
 	<div class="pull-right">
 		<span class="btn btn-mini">{{$cartTotal}}</span>
-		<a href="product_summary.html"><span class="">VND</span></a>
-		<a href="product_summary.html"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ {{$cartTotal}} ] Items in your cart </span> </a> 
+		<a ><span class="">VND</span></a>
+		<a href="{{url('checkout/'.Auth::user()->id) }}"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ {{$cartNum}} ] Items in your cart </span> </a> 
 	</div>
+	@endguest
 	</div>
 </div>
 <!-- Navbar ================================================== -->
@@ -75,15 +83,15 @@
     </form>
     <ul id="topMenu" class="nav pull-right">
 	 <!-- <li class=""><a href="special_offer.html">Specials Offer</a></li> -->
-	 <li class=""><a href="normal.html">Delivery</a></li>
-	 <li class=""><a href="contact.html">Contact</a></li>
 	 @guest
 		<li class=""><a role="button" style="padding-right:0"href="{{ route('register') }}" ><span class="btn btn-large btn-success">Register</span></a><li>
 			<!-- <a role="button" style="padding-right:0"href="{{ route('login') }}" ><span class="btn btn-large btn-success">Register</span></a> -->
 		<li><a role="button" style="padding-right:0"href="{{ route('login') }}" ><span class="btn btn-large btn-success">Login</span></a></li>
 	@else
+		<li class=""><a href="{{ url('/view-order/'.Auth::user()->id ) }}">My Orders</a></li>
+		<li class=""><a href="{{ url('/checkout/'.Auth::user()->id ) }}"> Checkout</a></li>
 		<li class=""><a href="{{ url('/profile/'.Auth::user()->id	) }}">Profile</a></li>
-	 <li class=""><a href="{{ route('logout') }}">Logout</a></li>
+		<li class=""><a href="{{ route('logout') }}">Logout</a></li>
 	@endguest
     </ul>
   </div>
@@ -177,29 +185,28 @@
 	<div  id="footerSection">
 	<div class="container">
 		<div class="row">
-			<div class="span3">
-				<h5>ACCOUNT</h5>
-				<a href="login.html">YOUR ACCOUNT</a>
-				<a href="login.html">PERSONAL INFORMATION</a> 
-				<a href="login.html">ADDRESSES</a> 
-				<a href="login.html">DISCOUNT</a>  
-				<a href="login.html">ORDER HISTORY</a>
+    <div class="span3">
+				<h5>ABOUT BOOK SHOP</h5>
+				<a >ABOUT US</a>
+				<a >OUR CAREERS</a> 
+				<a >OUR POLICIES</a> 
+
 			 </div>
 			<div class="span3">
 				<h5>INFORMATION</h5>
-				<a href="contact.html">CONTACT</a>  
-				<a href="register.html">REGISTRATION</a>  
-				<a href="legal_notice.html">LEGAL NOTICE</a>  
-				<a href="tac.html">TERMS AND CONDITIONS</a> 
-				<a href="faq.html">FAQ</a>
+				<a >CONTACT</a>  
+				<a >REGISTRATION</a>  
+				<a >LEGAL NOTICE</a>  
+				<a >TERMS AND CONDITIONS</a> 
+				<a >FAQ</a>
 			 </div>
 			<div class="span3">
 				<h5>OUR OFFERS</h5>
-				<a href="#">NEW PRODUCTS</a> 
-				<a href="#">TOP SELLERS</a>  
-				<a href="special_offer.html">SPECIAL OFFERS</a>  
-				<a href="#">MANUFACTURERS</a> 
-				<a href="#">SUPPLIERS</a> 
+				<a >NEW PRODUCTS</a> 
+				<a >TOP SELLERS</a>
+				<a >SPECIAL OFFERS</a>  
+				<a >MANUFACTURERS</a> 
+				<a>SUPPLIERS</a> 
 			 </div>
 			<div id="socialMedia" class="span3 pull-right">
 				<h5>SOCIAL MEDIA </h5>

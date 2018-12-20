@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Category;
 use App\Product;
+use App\Order;
+use App\OrderDetail;
 use Auth;
 use Validator;
 use Session;
@@ -86,6 +88,23 @@ class UserController extends Controller
 
 	public function viewProfile($id = null){
 		if(Auth::id() == $id){
+			$session_id = Auth::id();
+			$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
+			$cartNum = 0;
+			$cartTotal = 0;
+			$productsALl = "";
+			$productsAll = Product::inRandomOrder()->take(12)->get();
+			$productsAll = json_decode(json_encode($productsAll));
+			foreach($cart as $product){
+				$cartNum += (int)$product->productQuantity;
+				$cartTotal += (int)$product->productPrice*(int)$product->productQuantity;
+				$pro = Product::where(['productId'=>$product->productId])->first();
+				$product->productImage = $pro->productImage;
+				$product->currentQuantity = $pro->productQuantity;
+			}
+			$categories_menu = "";
+			$categories = Category::with('categories')->where('categoryId', '>', '0')->get();
+			$categories = json_decode(json_encode($categories));
 			$user = User::where(['id'=>$id])->first();
 			$males = array('Nam', 'Nữ', '?', '');
       $males_drop_down = "";
@@ -97,7 +116,7 @@ class UserController extends Controller
             }
             $males_drop_down .= "<option value='".$male."' ".$selected.">".$male."</option>";
         }
-			return view('profile')->with(compact('user', 'males_drop_down'));
+			return view('profile')->with(compact('user', 'males_drop_down', 'categories', 'cartTotal', 'cartNum'));
 		}
 		return redirect()->back();
 	}
@@ -193,7 +212,7 @@ class UserController extends Controller
 		return view('welcome')->with(compact('categories', 'cartTotal', 'cartNum', 'productsAll'));
 	}
 
-	public function checkOut($id = null)
+	public function checkCart($id = null)
 	{
 		// return 1;
 		$session_id = Auth::id();
@@ -206,6 +225,7 @@ class UserController extends Controller
 			$cartTotal += (int)$product->productPrice*(int)$product->productQuantity;
 			$pro = Product::where(['productId'=>$product->productId])->first();
 			$product->productImage = $pro->productImage;
+			$product->currentQuantity = $pro->productQuantity;
 		}
 		$categories_menu = "";
 		$categories = Category::with('categories')->where('categoryId', '>', '0')->get();
@@ -213,9 +233,139 @@ class UserController extends Controller
 		return view('checkout')->with(compact('categories', 'cartTotal', 'cartNum', 'cart'));
 	}
 
-	public function deleteCoupon($id = null){
-        Coupon::where(['id'=>$id])->delete();
-        return redirect()->back()->with('flash_message_success', 'Coupon has been deleted successfully');
-    }
+	public function editCart(Request $request, $id = null)
+	{
+		// return 1;
+		if(Auth::id() == $id){
+			$session_id = Auth::id();
+			$data = $request->all();
+			$productId = $data['productId'];
+			$quantity = $data['quantity'];
+			// $existCart = DB::table('cart')->where(['session_id'=>$session_id, 'productId'=>$productId])->first();
+			DB::table('cart')->where(['session_id'=>$session_id, 'productId'=>$productId])
+				->update(['productQuantity'=>$quantity]);
+		}
+		$session_id = Auth::id();
+		$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
+		$cartNum = 0;
+		$cartTotal = 0;
+		$productsALl = "";
+		foreach($cart as $product){
+			$cartNum += (int)$product->productQuantity;
+			$cartTotal += (int)$product->productPrice*(int)$product->productQuantity;
+			$pro = Product::where(['productId'=>$product->productId])->first();
+			$product->productImage = $pro->productImage;
+			$product->currentQuantity = $pro->productQuantity;
+		}
+		$categories_menu = "";
+		$categories = Category::with('categories')->where('categoryId', '>', '0')->get();
+		$categories = json_decode(json_encode($categories));
+		return view('checkout')->with(compact('categories', 'cartTotal', 'cartNum', 'cart'));
+	}
+
+	public function order(Request $request, $id = null){
+		if(Auth::id() == $id){
+			$session_id = Auth::id();
+
+			$user = User::where(['id'=>$id])->first();
+			if($request->isMethod('post')){
+				$data = $request->all();
+				$order = new Order;
+				$order->id = $id;
+				$order->orderDate = date("Y-m-d");
+				$order->orderStatus = "Processing";
+				$order->orderAddress = $data['address'];
+				$order->save();
+				$order = Order::where(['id'=>$id])->orderBy('orderId', 'DESC')->first();
+				$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
+				foreach($cart as $product){
+					$orderDetail = new OrderDetail;
+					$orderDetail->orderId = $order->orderId;
+					$orderDetail->productId = $product->productId;
+					$orderDetail->quantity = $product->productQuantity;
+					$orderDetail->price = $product->productPrice;
+					$orderDetail->totalPrice = $product->productPrice*$product->productQuantity;
+					$orderDetail->save();
+					$productpicked = Product::where(['productId'=>$product->productId])->first();
+					$productQua = $productpicked->productQuantity - $product->productQuantity;
+					Product::where(['productId'=>$product->productId])->update(['productQuantity'=>$productQua]);
+				}
+				DB::table('cart')->where(['session_id'=>Auth::id()])->delete();
+				$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
+				$cartNum = 0;
+				$cartTotal = 0;
+				foreach($cart as $product){
+					$cartNum += (int)$product->productQuantity;
+					$cartTotal += (int)$product->productPrice*(int)$product->productQuantity;
+				}
+				$categories = Category::with('categories')->where('categoryId', '>', '0')->get();
+				$categories = json_decode(json_encode($categories));
+				$productsAll = Product::inRandomOrder()->take(12)->get();
+				$productsAll = json_decode(json_encode($productsAll));
+				$user = User::where(['id'=>$id])->first();
+				return view('welcome')->with(compact('categories', 'cartTotal', 'cartNum', 'productsAll'));
+			}
+			$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
+			$cartNum = 0;
+			$cartTotal = 0;
+			foreach($cart as $product){
+				$cartNum += (int)$product->productQuantity;
+				$cartTotal += (int)$product->productPrice*(int)$product->productQuantity;
+			}
+			$categories = Category::with('categories')->where('categoryId', '>', '0')->get();
+			$categories = json_decode(json_encode($categories));
+			$productsAll = Product::inRandomOrder()->take(12)->get();
+			$productsAll = json_decode(json_encode($productsAll));
+			return view('order')->with(compact('categories', 'cartTotal', 'cartNum', 'user'));
+		}
+	}
+
+	public function viewOrder($id = null){
+		if(Auth::id() == $id){
+			$session_id = Auth::id();
+			$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
+			$cartNum = 0;
+			$cartTotal = 0;
+			foreach($cart as $product){
+				$cartNum += (int)$product->productQuantity;
+				$cartTotal += (int)$product->productPrice*(int)$product->productQuantity;
+			}
+			$categories = Category::with('categories')->where('categoryId', '>', '0')->get();
+			$categories = json_decode(json_encode($categories));
+			$productsAll = Product::inRandomOrder()->take(12)->get();
+			$productsAll = json_decode(json_encode($productsAll));
+			$orders = Order::where(['id'=>$id])->get();
+			return view('view_order')->with(compact('categories', 'cartTotal', 'cartNum', 'orders'));
+		}
+		$session_id = Auth::id();
+		$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
+		$cartNum = 0;
+		$cartTotal = 0;
+		foreach($cart as $product){
+			$cartNum += (int)$product->productQuantity;
+			$cartTotal += (int)$product->productPrice*(int)$product->productQuantity;
+		}
+		$categories = Category::with('categories')->where('categoryId', '>', '0')->get();
+		$categories = json_decode(json_encode($categories));
+		$productsAll = Product::inRandomOrder()->take(12)->get();
+		$productsAll = json_decode(json_encode($productsAll));
+		return view('welcome')->with(compact('categories', 'cartTotal', 'cartNum', 'productsAll'));
+	}
+
+	public function cancelOrder($id = null, $idp = null){
+		if(Auth::id() == $id){
+			$order = Order::where(['orderId'=>$idp])->first();
+			if($order->orderStatus != "Processing") return redirect('/view-order/'.Auth::id());
+			$orderDetail = OrderDetail::where(['orderId'=>$idp])->get();
+			foreach($orderDetail as $ord){
+				$product = Product::where(['productId'=>$ord->productId])->first();
+				Product::where(['productId'=>$product->productId])->update(['productQuantity'=>$product->productQuantity+$ord->quantity]);
+			}
+			$orderDetail = OrderDetail::where(['orderId'=>$idp])->delete();
+			Order::where(['orderId'=>$idp])->update(['orderStatus'=>"Cancelled"]);
+			return redirect('/view-order/'.Auth::id());
+		}
+		return redirect('/view-order/'.Auth::id());
+  }
 
 }

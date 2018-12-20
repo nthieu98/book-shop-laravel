@@ -66,7 +66,7 @@
       <div class="span12">
         <div class="widget-box">
           <div class="widget-title"> <span class="icon"> <i class="icon-info-sign"></i> </span>
-            <h5>Add Product</h5>
+            <h5>Products</h5>
           </div>
           <div class="widget-content nopadding">
             <div>
@@ -90,6 +90,7 @@
                         <input type="hidden" name="product_id" id="product_id" value = "{{ $orderChild->productId}}"  hidden = "hidden"></td>
                         
                         <td class="center"><input type="number" name="quantity" id="quantity1"class="numberic_value1" value = "{{ $orderChild->quantity}}" required></td>
+                        <input type ="hidden" name = "quantity1" id = "quantity1" value = "{{$orderChild->quantity}}" min = "1">
                         <td class="center"><input type="number" name="price" id="price1" class="numberic_value1" value = "{{ $orderChild->price}}" disabled></td>
                         <td class="center"><span type="number" name="total1" id="total1" value = "">{{ $orderChild->price*$orderChild->quantity}}</span></td>
                         <td class="center">
@@ -136,7 +137,7 @@
                     <select>
                     
                   </td>
-                  <td class="center"><input type="number" name="quantity" id="quantity"class="numberic_value" required></td>
+                  <td class="center"><input type="number" name="quantity" id="quantity"class="numberic_value" min = "1" required></td>
                   <td class="center"><input type="number" name="price" id="price" class="numberic_value" disabled></td>
                   <td class="center"><span type="number" name="total" id="total"></span></td>
                   <td class="center">

@@ -43,11 +43,20 @@
 	@endguest
 	</strong></div>
 	<div class="span6">
+	@guest
+	<div class="pull-right">
+		<span class="btn btn-mini">0</span>
+		<a ><span class="">VND</span></a>
+		<a ><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ 0 ] Items in your cart </span> </a> 
+	</div>
+	@else
 	<div class="pull-right">
 		<span class="btn btn-mini">{{$cartTotal}}</span>
-		<a href="product_summary.html"><span class="">VND</span></a>
-		<a href="product_summary.html"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ {{$cartNum}} ] Items in your cart </span> </a> 
+		<a ><span class="">VND</span></a>
+		<a href="{{url('checkout/'.Auth::user()->id) }}"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ {{$cartNum}} ] Items in your cart </span> </a> 
 	</div>
+	@endguest
+	
 	</div>
 </div>
 <!-- Navbar ================================================== -->
@@ -77,7 +86,7 @@
 			<!-- <a role="button" style="padding-right:0"href="{{ route('login') }}" ><span class="btn btn-large btn-success">Register</span></a> -->
 		<li><a role="button" style="padding-right:0"href="{{ route('login') }}" ><span class="btn btn-large btn-success">Login</span></a></li>
 	@else
-		<li class=""><a href="normal.html">My Orders</a></li>
+		<li class=""><a href="{{ url('/view-order/'.Auth::user()->id ) }}">My Orders</a></li>
 		<li class=""><a href="{{ url('/checkout/'.Auth::user()->id ) }}"> Checkout</a></li>
 		<li class=""><a href="{{ url('/profile/'.Auth::user()->id	) }}">Profile</a></li>
 		<li class=""><a href="{{ route('logout') }}">Logout</a></li>
@@ -142,8 +151,8 @@
 			  <ul class="thumbnails">
 				@foreach ($productsAll as $pro)
 					<li class="span3">
-						<div class="thumbnail">
-						<a ><img style="width: 200px; display: inline;" src="{{ asset('/images/backend_images/product/medium/'.$pro->productImage) }}" alt=""/></a>
+						<div class="thumbnail" >
+						<a href="{{url('product/'.$pro->productId)}}"><img style="width: 200px; display: inline;" src="{{ asset('/images/backend_images/product/medium/'.$pro->productImage) }}" alt=""/></a>
 						<div class="caption">
 							<h5 >{{$pro->productName}}</h5>
 							<!-- <p> 

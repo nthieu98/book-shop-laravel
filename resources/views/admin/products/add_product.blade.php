@@ -26,11 +26,11 @@
             <h5>Add Product</h5>
           </div>
           <div class="widget-content nopadding">
-            <form enctype="multipart/form-data" class="form-horizontal" method="post" action="{{ url('admin/add-product') }}" name="add_product" id="add_product" novalidate="novalidate">{{ csrf_field() }}
+            <form enctype="multipart/form-data" class="form-horizontal" method="post" action="{{ url('admin/add-product') }}" name="add_product" id="add_product">{{ csrf_field() }}
               <div class="control-group">
                 <label class="control-label">Under Category</label>
                 <div class="controls">
-                  <select name="category_id" id="category_id" style="width:220px;">
+                  <select name="category_id" id="category_id" style="width:220px;" required>
                     <?php echo $categories_drop_down; ?>
                   </select>
                 </div>
@@ -38,7 +38,7 @@
               <div class="control-group">
                 <label class="control-label">Product Name</label>
                 <div class="controls">
-                  <input type="text" name="product_name" id="product_name">
+                  <input type="text" name="product_name" id="product_name"required>
                 </div>
               </div>
               <!-- <div class="control-group">
@@ -62,19 +62,19 @@
               <div class="control-group">
                 <label class="control-label">Quantity</label>
                 <div class="controls">
-                <input type="number" name="quantity" id="quantity">
+                <input type="number" name="quantity" id="quantity"required>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Price</label>
                 <div class="controls">
-                  <input type="number" name="price" id="price">
+                  <input type="number" name="price" id="price"required>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Image</label>
                 <div class="controls">
-                  <div class="uploader" id="uniform-undefined"><input name="image" id="image" type="file" size="19" style="opacity: 0;"><span class="filename">No file selected</span><span class="action">Choose File</span></div>
+                  <div class="uploader" id="uniform-undefined"><input required name="image" id="image" type="file" size="19" style="opacity: 0;"><span class="filename">No file selected</span><span class="action">Choose File</span></div>
                 </div>
               </div>
               <!-- <div class="control-group">

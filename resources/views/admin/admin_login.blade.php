@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="{{ asset('css/backend_css/bootstrap.min.css') }}" />
 		<link rel="stylesheet" href="{{ asset('css/backend_css/bootstrap-responsive.min.css') }}" />
         <link rel="stylesheet" href="{{ asset('css/backend_css/matrix-login.css') }}" />
+        <link href="{{{ asset('css/backend_css/style.css') }}}" rel="stylesheet">
         <link href="{{ asset('fonts/backend_fonts/css/font-awesome.css') }}" rel="stylesheet" />
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
 
@@ -58,7 +59,7 @@
                
                 <div class="form-actions">
                     <span class="pull-left"><a href="#" class="flip-link btn btn-success" id="to-login">&laquo; Back to login</a></span>
-                    <span class="pull-right"><a class="btn btn-info"/>Reecover</a></span>
+                    <span class="pull-right"><a class="btn btn-info"/>Recover</a></span>
                 </div>
             </form>
         </div>

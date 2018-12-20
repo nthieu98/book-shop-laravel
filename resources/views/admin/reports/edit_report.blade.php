@@ -27,12 +27,13 @@
             <h5>Edit Report</h5>
           </div>
           <div class="widget-content nopadding">
-            <form class="form-horizontal" method="post" action="{{ url('admin/edit-report/'.$reportDetails->reportId) }}" name="add_report" id="add_report" novalidate="novalidate">{{ csrf_field() }}
+            <form class="form-horizontal" method="post" action="{{ url('admin/edit-report/'.$reportDetails->reportId) }}" name="add_report" id="add_report" >{{ csrf_field() }}
               <div class="control-group">
                 <label class="control-label">Report Type</label>
                 <div class="controls">
-                  <input type="text" name="report_type" id="report_type" value="{{ $reportDetails->reportType }}">
-                </div>
+                <select name="report_type" id="report_type" style="width:220px;" required>
+                    <?php echo $types_drop_down; ?>
+                  </select>                </div>
               </div>
               <!-- <div class="control-group">
                 <label class="control-label">Date</label>
@@ -43,25 +44,25 @@
               <div class="control-group">
                 <label class="control-label">Date</label>
                 <div class="controls">
-                  <input type="date" name="date" id="date" value="{{ $reportDetails->reportDate }}">
+                  <input type="date" name="date" id="date" value="{{ $reportDetails->reportDate }}"required>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Product Id</label>
                 <div class="controls">
-                  <input type="text" name="product_id" id="product_id" value="{{ $reportDetails->productId }}">
+                  <input type="text" name="product_id" id="product_id" value="{{ $reportDetails->productId }}"required>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Quantity</label>
                 <div class="controls">
-                  <input type="number" name="quantity" id="quantity" value="{{ $reportDetails->quantity }}" class = "numberic_value">
+                  <input type="number" name="quantity" id="quantity" value="{{ $reportDetails->quantity }}" class = "numberic_value"required>
                 </div>
               </div>
               <div class="control-group">
                 <label class="control-label">Price</label>
                 <div class="controls">
-                  <input type="number" name="price" id="price" value="{{ $reportDetails->price }}" class="numberic_value">
+                  <input type="number" name="price" id="price" value="{{ $reportDetails->price }}" class="numberic_value"required>
                 </div>
               </div>
               <div class="control-group">

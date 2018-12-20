@@ -12,6 +12,7 @@ use App\Product;
 use App\ProductsAttribute;
 use App\ProductsImage;
 use App\Coupon;
+use App\OrderDetail;
 use DB;
 
 class ProductsController extends Controller
@@ -241,6 +242,10 @@ class ProductsController extends Controller
 	}
 
 	public function deleteProduct($id = null){
+        $order = OrderDetail::where(['productId'=>$id])->first();
+        if(!empty($order)){
+            return redirect()->back()->with('flash_message_error', 'Product has been deleted unsuccessfully');
+        }
         Product::where(['productId'=>$id])->delete();
         return redirect()->back()->with('flash_message_success', 'Product has been deleted successfully');
     }

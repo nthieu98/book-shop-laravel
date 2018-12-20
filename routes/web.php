@@ -85,20 +85,20 @@ Route::prefix('admin')->group(function()  {
 	// Admin Reports Routes
 	Route::match(['get','post'],'/add-report','ReportsController@addReport');
 	Route::match(['get','post'],'/edit-report/{id}','ReportsController@editReport');
-	Route::get('admin/view-reports','ReportsController@viewReports');
-    Route::get('/delete-report/{id}','ReportsController@deleteReport');
+	Route::get('/view-reports','ReportsController@viewReports');
+	Route::get('/delete-report/{id}','ReportsController@deleteReport');
 
-    // Admin Orders Routes
-    Route::match(['get','post'],'/add-order','OrdersController@addOrder');
-    Route::match(['get','post'],'/add-order/{id}/add-product','OrdersController@addProduct');
-    Route::match(['get','post'],'/add-order/{id}/delete-product/{idp}','OrdersController@deleteProduct');
-    Route::match(['get','post'],'/edit-order/{id}','OrdersController@editOrder');
-    Route::match(['get','post'],'/edit-order/{id}/edit-order-detail','OrdersController@editOrderDetail');
-    Route::match(['get','post'],'/edit-order/{id}/delete-order-detail/{idp}','OrdersController@deleteDetail');
+	// Admin Orders Routes
+	Route::match(['get','post'],'/add-order','OrdersController@addOrder');
+	Route::match(['get','post'],'/add-order/{id}/add-product','OrdersController@addProduct');
+	Route::match(['get','post'],'/add-order/{id}/delete-product/{idp}','OrdersController@deleteProduct');
+	Route::match(['get','post'],'/edit-order/{id}','OrdersController@editOrder');
+	Route::match(['get','post'],'/edit-order/{id}/edit-order-detail','OrdersController@editOrderDetail');
+	Route::match(['get','post'],'/edit-order/{id}/delete-order-detail/{idp}','OrdersController@deleteDetail');
 	Route::get('/view-orders','OrdersController@viewOrders');
-    Route::get('/delete-order/{id}','OrdersController@deleteOrder');
-    
-    Route::get('/logout','AdminController@logout');
+	Route::get('/delete-order/{id}','OrdersController@deleteOrder');
+	
+	Route::get('/logout','AdminController@logout');
 });
 
 
@@ -118,5 +118,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/search', 'IndexController@search');
 Route::get('/product/{id}', 'IndexController@viewProduct');
 Route::post('/product/{id}', 'UserController@addCart');
-Route::get('/checkout/{id}', 'UserController@checkOut');
+Route::get('/checkout/{id}', 'UserController@checkCArt');
+Route::post('/checkout/{id}', 'UserController@editCart');
+Route::match(['get', 'post'],'/order/{id}', 'UserController@order');
+Route::get('/cancel-order/{id}/{idp}', 'UserController@cancelOrder');
+Route::get('/view-order/{id}', 'UserController@viewOrder');
 Route::get('/{id}/{idp}', 'UserController@addCart2');

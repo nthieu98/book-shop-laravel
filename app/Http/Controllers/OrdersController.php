@@ -86,6 +86,7 @@ class OrdersController extends Controller
             $orderDetails->price = $pickedProduct->productPrice;
             $orderDetails->totalPrice = $orderDetails->quantity * $orderDetails->price;
             $orderDetails->save();
+            Product::where(['productId'=>$data['product_id']])->update(['productQuantity'=>$pickedProduct->productQuantity-$orderDetails->quantity]);
             // echo "<pre>"; print_r($orderDetails); die;
     		return redirect()->back()->with(compact('products', 'order', 'orderList'))->with('flash_message_success', 'Product has been added successfully');
     	}
@@ -162,26 +163,39 @@ class OrdersController extends Controller
             $data = $request->all();      
 
             $pickedProduct = Product::where(['productId'=>$data['product_id']])->first();
+            
             $orderDetails = new OrderDetail;           
             $orderDetails->price = $pickedProduct->productPrice;
             $orderDetails->quantity = $data['quantity'];
             // echo "<pre>"; print_r($data); die;
             $checkOrder = OrderDetail::where(['orderId'=>$id, 'productId'=>$data['product_id']])->first();
-            if($data['type_req'] == "0"){
+             $dif = 0;
+             if($data['type_req'] == "0"){
+                $dif = $data['quantity1']-$data['quantity'];
+                if($pickedProduct->productQuantity < -$dif){
+                    return redirect('admin/edit-order/'.$id.'/edit-order-detail')->with('flash_message_error', 'Product ID '.$pickedProduct->productId.' : '.$pickedProduct->productQuantity.' items remaining');
+                }
                 OrderDetail::where(['orderId'=>$id, 'productId'=>$data['product_id']])->
                 update(['quantity'=>$data['quantity'],'totalPrice'=> $orderDetails->quantity * $orderDetails->price]);
+                
             }else{
+                if($pickedProduct->productQuantity < $data['quantity']){
+                    return redirect('admin/edit-order/'.$id.'/edit-order-detail')->with('flash_message_error', 'Product ID '.$pickedProduct->productId.' : '.$pickedProduct->productQuantity.' items remaining');
+                }
                 if(empty($checkOrder)){
                     // return 1;
                     $orderDetails->quantity = $data['quantity'];
+                    
                 }
                 else{    
                     // echo "<pre>"; print_r($checkOrder); die;
                     // return 2;
-                    $orderDetails->quantity = $data['quantity'] + $checkOrder->quantity;        
+                    $orderDetails->quantity = $data['quantity'] + $checkOrder->quantity;  
+                          
                     OrderDetail::where(['orderId'=>$id, 'productId'=>$data['product_id']])->delete();
+                    
                 }
-                
+                $dif = -$data['quantity'];
                 // $orderDetails->quantity = $data['quantity'] + $checkOrder->quantity;        
                 $orderDetails->orderId = $id;
                 $orderDetails->productId = $data['product_id'];
@@ -189,6 +203,7 @@ class OrdersController extends Controller
                 $orderDetails->save();
             
             }
+            Product::where(['productId'=>$pickedProduct->productId])->update(['productQuantity'=>$pickedProduct->productQuantity+$dif]);
             return redirect()->back()->with(compact('products', 'order', 'orderList'))->with('flash_message_success', 'Order has been updated successfully');
 
         // $levels = Category::where(['parent_id'=>0])->get();
@@ -199,11 +214,19 @@ class OrdersController extends Controller
     }
 
     public function deleteDetail($id = null, $idp = null){
+        $order = OrderDetail::where(['orderId'=>$id, 'productId'=>$idp])->first();
+        $product = Product::where(['productId'=>$idp])->first();
+        Product::where(['productId'=>$idp])->update(['productQuantity'=>$product->productQuantity+$order->quantity]);
         OrderDetail::where(['orderId'=>$id, 'productId'=>$idp])->delete();
         return redirect()->back()->with('flash_message_success', 'Order has been updated successfully');
     }
 
     public function deleteOrder($id = null){
+        $orders = OrderDetail::where(['orderId'=>$id])->get();
+        foreach($orders as $order){
+            $product = Product::where(['productId'=>$order->productId])->first();
+            Product::where(['productId'=>$product->productId])->update(['productQuantity'=>$product->productQuantity+$order->quantity]);
+        }
         OrderDetail::where(['orderId'=>$id])->delete();
         Order::where(['orderId'=>$id])->delete();
         return redirect()->back()->with('flash_message_success', 'Order has been deleted successfully');

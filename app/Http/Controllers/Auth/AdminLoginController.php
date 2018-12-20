@@ -40,7 +40,7 @@ class AdminLoginController extends Controller
       }
 
       // if unsuccessful, then redirect back to the login with the form data
-      return redirect()->back()->withInput($request->only('username', 'remember'));
+      return redirect()->back()->withInput($request->only('username', 'remember'))->with('flash_message_error','Invalid Username or Password');
     }
 
     // public function login(Request $request)

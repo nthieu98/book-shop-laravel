@@ -27,7 +27,7 @@
             <h5>Order Info</h5>
           </div>
           <div class="widget-content nopadding">
-            <form class="form-horizontal" method="post" action="{{ url('admin/add-order') }}" name="add_order" id="add_order" novalidate="novalidate">{{ csrf_field() }}
+            <form class="form-horizontal" method="post" action="{{ url('admin/add-order') }}" name="add_order" id="add_order">{{ csrf_field() }}
               <div class="control-group">
                 <label class="control-label">User ID</label>
                 <div class="controls">
@@ -97,14 +97,14 @@
                 <tr class="gradeX">
                   <form method = "post" action="{{ url('admin/add-order/'.$order->orderId.'/add-product') }}">{{ csrf_field() }}
                   <td class="center">
-                    <select name = "product_id" id = "product_id" style = "width:220px;" class = "product_id" required>
+                    <select name = "product_id" placeholder = "Product ID" id = "product_id" style = "width:220px;" class = "product_id" required>
                       <option selected="selected" value ="" disabled>--</option>
                       @foreach($products as $product)
                          <option value = "{{ $product->productId }}" product-price = "{{ $product->productPrice }}"> {{ $product->productId }}</option>
                       @endforeach
                     <select>
                   </td>
-                  <td class="center"><input type="number" name="quantity" id="quantity"class="numberic_value" required></td>
+                  <td class="center"><input type="number" name="quantity" id="quantity"class="numberic_value" min = "1" max = "{{$product->productQuantity}}"required></td>
                   <td class="center"><input type="number" name="price" id="price" class="numberic_value" disabled></td>
                   <td class="center"><span type="number" name="total" id="total"></span></td>
                   <td class="center">
