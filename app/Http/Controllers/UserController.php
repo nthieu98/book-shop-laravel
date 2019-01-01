@@ -175,6 +175,7 @@ class UserController extends Controller
 			$session_id = Auth::id();
 			// print($session_id);die;
 			$pickedPro = Product::where(['productId'=>$idp])->first();
+			if($pickedPro->productId < 1) return redirect('/');
 			$productId = $idp;
 			$userId = Auth::id();
 			$quantity = 1;
@@ -202,6 +203,14 @@ class UserController extends Controller
 			$categories = json_decode(json_encode($categories));
 			$product = Product::where(['productId'=>$id])->first();
 			// print_r($cartNum); die;
+		}
+		$session_id = Auth::id();
+		$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
+		$cartNum = 0;
+		$cartTotal = 0;
+		foreach($cart as $product){
+			$cartNum += (int)$product->productQuantity;
+			$cartTotal += (int)$product->productPrice*(int)$product->productQuantity;
 		}
 		$productsAll = Product::inRandomOrder()->take(12)->get();
 		$productsAll = json_decode(json_encode($productsAll));
@@ -274,7 +283,7 @@ class UserController extends Controller
 				$order->id = $id;
 				$order->orderDate = date("Y-m-d");
 				$order->orderStatus = "Processing";
-				$order->orderAddress = $data['address'];
+				$order->orderAddress = $data['name'].','.$data['address'];
 				$order->save();
 				$order = Order::where(['id'=>$id])->orderBy('orderId', 'DESC')->first();
 				$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
@@ -282,6 +291,7 @@ class UserController extends Controller
 					$orderDetail = new OrderDetail;
 					$orderDetail->orderId = $order->orderId;
 					$orderDetail->productId = $product->productId;
+					$orderDetail->name = $product->productName;
 					$orderDetail->quantity = $product->productQuantity;
 					$orderDetail->price = $product->productPrice;
 					$orderDetail->totalPrice = $product->productPrice*$product->productQuantity;
@@ -335,7 +345,25 @@ class UserController extends Controller
 			$productsAll = Product::inRandomOrder()->take(12)->get();
 			$productsAll = json_decode(json_encode($productsAll));
 			$orders = Order::where(['id'=>$id])->get();
-			return view('view_order')->with(compact('categories', 'cartTotal', 'cartNum', 'orders'));
+			$orderDetails = Orderdetail::get();
+			foreach($orders as $order){
+				$sum = 0;
+				foreach($orderDetails as $orderDetail){
+					if($orderDetail->orderId == $order->orderId){
+						$sum += $orderDetail->totalPrice;
+					}
+				}
+				$order->orderTotal = $sum;
+			}
+			// $userOrder = "";
+			// foreach($orders as $order){
+			// 	$thisOrder = DB::select("SELECT * FROM `orderdetails` natural join `products` 
+			// 	where `orderId` = '$order->orderId' ");
+			// 	// $userOrder += $thisOrder;
+			// 	print_r($thisOrder);
+			// }
+			// print_r($userOrder); die;
+			return view('view_order')->with(compact('categories', 'cartTotal', 'cartNum', 'orders', 'orderDetails'));
 		}
 		$session_id = Auth::id();
 		$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
@@ -366,6 +394,29 @@ class UserController extends Controller
 			return redirect('/view-order/'.Auth::id());
 		}
 		return redirect('/view-order/'.Auth::id());
-  }
+	}
+	
+	public function deleteItem($id = null, $idp = null){
+		if(Auth::id() == $id){
+			$session_id = Auth::id();
+			DB::table('cart')->where(['session_id'=>$session_id, 'productId'=>$idp])->delete();
+			$cart = DB::table('cart')->where(['session_id' => $session_id])->get();	
+			$cartNum = 0;
+			$cartTotal = 0;
+			$productsALl = "";
+			foreach($cart as $product){
+				$cartNum += (int)$product->productQuantity;
+				$cartTotal += (int)$product->productPrice*(int)$product->productQuantity;
+				$pro = Product::where(['productId'=>$product->productId])->first();
+				$product->productImage = $pro->productImage;
+				$product->currentQuantity = $pro->productQuantity;
+			}
+			$categories_menu = "";
+			$categories = Category::with('categories')->where('categoryId', '>', '0')->get();
+			$categories = json_decode(json_encode($categories));
+			return view('checkout')->with(compact('categories', 'cartTotal', 'cartNum', 'cart'));
+		}
+		return redirect('/checkout/'.Auth::id());
 
+	}
 }

@@ -3,7 +3,7 @@
 
 <div id="content">
   <div id="content-header">
-    <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Report</a> <a href="#" class="current">View Reports</a> </div>
+  <div id="breadcrumb"> <a href="/admin/dashboard" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Orders</a> <a href="#" class="current">Add Order</a> </div>
     <h1>Reports</h1>
     @if(Session::has('flash_message_error'))
             <div class="alert alert-error alert-block">
@@ -54,7 +54,7 @@
                   <td class="center">{{ $report->totalPrice }}</td>
                   <td class="center">
                     <a href="{{ url('/admin/edit-report/'.$report->reportId) }}" class="btn btn-primary btn-mini">Edit</a> 
-                    <a <?php /* id="delCat" href="{{ url('/admin/delete-category/'.$category->id) }}" */ ?> rel="{{ $report->reportId }}" rel1="delete-report" href="javascript:" class="btn btn-danger btn-mini deleteRecord">Delete</a></td>
+                    <a href="delete-report/{{ $report->reportId }}" href="javascript:" class="btn btn-danger btn-mini deleteRecord">Delete</a></td>
                 </tr>
                 @endforeach
               </tbody>

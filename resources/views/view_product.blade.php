@@ -118,8 +118,8 @@
 		<div class="row-fluid">
 		<div class="span9">
     <ul class="breadcrumb">
-    <li><a href="index.html">Home</a> <span class="divider">/</span></li>
-    <li><a href="products.html">Products</a> <span class="divider">/</span></li>
+    <li><a href="{{url('/')}}">Home</a> <span class="divider">/</span></li>
+    <li><a href="{{url('/')}}">Products</a> <span class="divider">/</span></li>
     <li class="active">product Details</li>
     </ul>	
 	<div class="row">	  
@@ -142,7 +142,7 @@
 					<input type="hidden" id ="price" name = "price" value = "{{$product->productPrice}}">
 					<input type="hidden" id ="productId" name = "productId" value = "{{$product->productId}}">
 					<div class="controls">
-					<input type="number" class="span6" name = "quantity" id = "quantity" placeholder="Quantity"value = "0">
+					<input type="number" class="span6" min = "1" name = "quantity" id = "quantity" placeholder="Quantity" max = "{{$product->productQuantity}}"value = "1">
 					</div>
 				  </div>
 					@guest
@@ -158,7 +158,7 @@
 				<p>
 				Details
 				</p>
-				<a class="btn btn-small pull-right" href="">More Details</a>
+				<a class="btn btn-small pull-right">More Details</a>
 				<br class="clr">
 			<a href="#" name="detail"></a>
 			<hr class="soft">

@@ -3,7 +3,7 @@
 
 <div id="content">
   <div id="content-header">
-    <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Categories</a> <a href="#" class="current">View Categories</a> </div>
+  <div id="breadcrumb"> <a href="/admin/dashboard" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Orders</a> <a href="#" class="current">Add Order</a> </div>
     <h1>Categories</h1>
     @if(Session::has('flash_message_error'))
             <div class="alert alert-error alert-block">
@@ -46,7 +46,7 @@
                   <!-- <td class="center">{{ $category->url }}</td> -->
                   <td class="center">
                     <a href="{{ url('/admin/edit-category/'.$category->categoryId) }}" class="btn btn-primary btn-mini">Edit</a> 
-                    <a <?php /* id="delCat" href="{{ url('/admin/delete-category/'.$category->id) }}" */ ?> rel="{{ $category->categoryId }}" rel1="delete-category" href="javascript:" class="btn btn-danger btn-mini deleteRecord">Delete</a></td>
+                    <a href="delete-category/{{ $category->categoryId }}" href="javascript:" class="btn btn-danger btn-mini deleteRecord">Delete</a></td>
                 </tr>
                 @endforeach
               </tbody>

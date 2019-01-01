@@ -120,11 +120,11 @@
 			</div>
 		@endif
 		<div class="row-fluid">
-			<div class = "span9">
+			<div class = "span12">
 				
 				<div>
-						<h3> Total: <span value = "{{$cartTotal}}" id = "total" >{{$cartTotal}}</span> đ</h3>
-						<a class="btn btn-success" href="{{url('/order/'.Auth::id())}}">Check out</a></h4>
+						
+						
 				</div>
 				@foreach ($cart as $pro)
 					<form class = "well form-inline" method = "post" action="{{url('/checkout/'.Auth::user()->id )}}">
@@ -133,16 +133,19 @@
 						<label style = "width:220px">
 							<img src="{{ asset('/images/backend_images/product/medium/'.$pro->productImage) }}" style = "width:200px">
 						</label>
-						<label style = "width: 250px">
+						<label style = "width: 350px">
 							<h4>{{$pro->productName}}</h4>
 							<p class="product-description">{{$pro->productPrice}} đ</p>
 						</label>
-						<label style = "width: 350px">
+						<label style = "width: 300px">
 							<div class="product">
 								<!-- <div class="product-price"><p>{{$pro->productPrice}}</p></div> -->
 								<div class="product-quantity">
 									<!-- <p>{{$pro->currentQuantity}}</p> -->
-									<p>Quantity: </p><input required type="number" id = "quantity" name = "quantity" product-price="{{$pro->productPrice}}" value="{{$pro->productQuantity}}" min="1" max="{{$pro->currentQuantity}}">
+									<p>Quantity: </p>
+									
+									<input required type="number" style = "width:50px;" id = "quantity" name = "quantity" product-price="{{$pro->productPrice}}" value="{{$pro->productQuantity}}" min="1" max="{{$pro->currentQuantity}}">
+									
 								</div>
 									<p>Total:</p>
 								<div class="product-line-price" type = "hidden">{{$pro->productQuantity*$pro->productPrice}}  đ</div> 
@@ -150,10 +153,18 @@
 						</label>
 						<label>
 							<button class="btn btn-primary" type = "submit">Update</button>
+							<a href = "/checkout/del/{{Auth::id()}}/{{$pro->productId}}" class="btn btn-danger">Remove</a>
 						</label>
 						
 					</form>
 				@endforeach
+				<h3> Total: <span value = "{{$cartTotal}}" id = "total" >{{$cartTotal}}</span> đ</h3>
+				@if($cartTotal>0)
+					<a class="btn btn-success" href="{{url('/order/'.Auth::id())}}">Check out</a></h4>
+				@else
+
+					<span class="label label-important">Your cart is empty!</span>
+				@endif
 			</div>
 		</div>
 		<script>

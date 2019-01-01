@@ -121,17 +121,28 @@
 <div class = "span8">
   <form class="form-horizontal" method = "post" action="{{ url('order/'.$user->id) }}">{{csrf_field()}}
     <fieldset>
+		<div class="control-group">
+        <label for="address" class="control-label">Name</label> 
+        <div class="controls">
+          <input id="name" name="name" placeholder="Name" class="input-xlarge" type="text" value = "{{$user->name}}" required>
+        </div>
+			</div>
     <div class="control-group">
         <label for="address" class="control-label">Address</label> 
         <div class="controls">
-          <input id="address" name="address" placeholder="Address" class="input-xlarge" type="text" value = "{{$user->userAddress}}" required>
+          <input id="address" name="address" placeholder="Address" class="input-xlarge" type="text" value = "" required>
+        </div>
+			</div>
+			<div class="control-group">
+        <label for="price" class="control-label">Number of Items: </label> 
+        <div class="controls">
+          <input id="price" name="price" class="input-xlarge" required="required" type="text" disabled value = "{{$cartNum}}">
         </div>
       </div>
       <div class="control-group">
-        <label for="price" class="control-label">Price </label> 
+        <label for="price" class="control-label">Price: </label> 
         <div class="controls">
           <input id="price" name="price" class="input-xlarge" required="required" type="text" disabled value = "{{$cartTotal}}">
-          
         </div>
       </div>
       <div class="form-actions">

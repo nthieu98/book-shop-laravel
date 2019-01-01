@@ -21,35 +21,35 @@ Route::get('/', 'IndexController@index')->name('welcome');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'IndexController@index')->name('home');
 
 // Category/Listing Page
-Route::get('/products/{url}','ProductsController@products');
+// Route::get('/products/{url}','ProductsController@products');
 
 // Product Detail Page
-Route::get('/product/{id}','ProductsController@product');
+// Route::get('/product/{id}','ProductsController@product');
 
 // Cart Page
-Route::match(['get', 'post'],'/cart','ProductsController@cart');
+// Route::match(['get', 'post'],'/cart','ProductsController@cart');
 
 // Add to Cart Route
-Route::match(['get', 'post'], '/add-cart', 'ProductsController@addtocart');
+// Route::match(['get', 'post'], '/add-cart', 'ProductsController@addtocart');
 
 // Delete Product from Cart Route
-Route::get('/cart/delete-product/{id}','ProductsController@deleteCartProduct');
+// Route::get('/cart/delete-product/{id}','ProductsController@deleteCartProduct');
 
 // Update Product Quantity from Cart
-Route::get('/cart/update-quantity/{id}/{quantity}','ProductsController@updateCartQuantity');
+// Route::get('/cart/update-quantity/{id}/{quantity}','ProductsController@updateCartQuantity');
 
 // Get Product Attribute Price
-Route::any('/get-product-price','ProductsController@getProductPrice');
+// Route::any('/get-product-price','ProductsController@getProductPrice');
 
 // Apply Coupon
-Route::post('/cart/apply-coupon','ProductsController@applyCoupon');
+// Route::post('/cart/apply-coupon','ProductsController@applyCoupon');
 
 Route::prefix('admin')->group(function()  {
-    Route::get('/', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
-    Route::post('/', 'Auth\AdminLoginController@login')->name('admin.login.submit');
+  Route::get('', 'Auth\AdminLoginController@showLoginForm')->name('admin.login');
+  Route::post('', 'Auth\AdminLoginController@login')->name('admin.login.submit');
 	Route::get('/dashboard','AdminController@index')->name('admin.dashboard');	
 	// Route::get('/settings','AdminController@settings');
 	// Route::get('/check-pwd','AdminController@chkPassword');
@@ -120,6 +120,7 @@ Route::get('/product/{id}', 'IndexController@viewProduct');
 Route::post('/product/{id}', 'UserController@addCart');
 Route::get('/checkout/{id}', 'UserController@checkCArt');
 Route::post('/checkout/{id}', 'UserController@editCart');
+Route::get('/checkout/del/{id}/{idp}', 'UserController@deleteItem');
 Route::match(['get', 'post'],'/order/{id}', 'UserController@order');
 Route::get('/cancel-order/{id}/{idp}', 'UserController@cancelOrder');
 Route::get('/view-order/{id}', 'UserController@viewOrder');

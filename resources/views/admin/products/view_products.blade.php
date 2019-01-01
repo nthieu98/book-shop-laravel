@@ -3,7 +3,7 @@
 
 <div id="content">
   <div id="content-header">
-    <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Products</a> <a href="#" class="current">View Products</a> </div>
+  <div id="breadcrumb"> <a href="/admin/dashboard" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Orders</a> <a href="#" class="current">Add Order</a> </div>
     <h1>Products</h1>
     @if(Session::has('flash_message_error'))
             <div class="alert alert-error alert-block">
@@ -60,7 +60,7 @@
                     <a href="{{ url('/admin/edit-product/'.$product->productId) }}" class="btn btn-primary btn-mini">Edit</a> 
                     <!-- <a href="{{ url('/admin/add-attributes/'.$product->productId) }}" class="btn btn-success btn-mini">Add</a> -->
                     <!-- <a href="{{ url('/admin/add-images/'.$product->productId) }}" class="btn btn-info btn-mini">Add</a> -->
-                    <a id="delProduct" rel="{{ $product->productId }}" rel1="delete-product" href="javascript:"  class="btn btn-danger btn-mini deleteRecord">Delete</a>
+                    <a href = "delete-product/{{ $product->productId }}" id="delProduct" href="javascript:"  class="btn btn-danger btn-mini deleteRecord">Delete</a>
  
                         <div id="myModal{{ $product->productId }}" class="modal hide">
                           <div class="modal-header">

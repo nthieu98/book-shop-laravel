@@ -55,50 +55,35 @@ class OrdersController extends Controller
         $order = Order::where(['orderId'=>$id])->first();        
         $users = User::where('id', '>', 0)->get();
         $orderList = OrderDetail::where(['orderId'=>$id])->get();
-        // echo "<pre>"; print_r($orderList); die;
         $products = Product::where('productId', '>', 0)->get();
     	if($request->isMethod('post')){
             $data = $request->all();
             $orderDetails = new OrderDetail;
-            $checkOrder = OrderDetail::where(['orderId'=>$id, 'productId'=>$data['product_id']])->first();
-            // echo "<pre>"; print_r($orderList); die;
+            $checkOrder = OrderDetail::where(['orderId'=>$id, 'productId'=>$data['product_id']])->first(); 
+            $pickedProduct = Product::where(['productId'=>$data['product_id']])->first();
+            Product::where(['productId'=>$data['product_id']])->update(['productQuantity'=>$pickedProduct->productQuantity-$data['quantity']]);
             if(empty($checkOrder)){
-                // return 1;
                 $orderDetails->quantity = $data['quantity'];
             }
-            else{    
-                // echo "<pre>"; print_r($checkOrder); die;
-                // return 2;
+            else{
                 $orderDetails->quantity = $data['quantity'] + $checkOrder->quantity;        
                 OrderDetail::where(['orderId'=>$id, 'productId'=>$data['product_id']])->delete();
             }
-
-    		// echo "<pre>"; print_r($data); die;
-
-            // if(empty($data['status'])){
-            //     $status='0';
-            // }else{
-            //     $status='1';
-            // }
-            $pickedProduct = Product::where(['productId'=>$data['product_id']])->first();
             $orderDetails->orderId = $id;
             $orderDetails->productId = $data['product_id'];
+            $orderDetails->name = $pickedProduct->productName;
             $orderDetails->price = $pickedProduct->productPrice;
             $orderDetails->totalPrice = $orderDetails->quantity * $orderDetails->price;
             $orderDetails->save();
-            Product::where(['productId'=>$data['product_id']])->update(['productQuantity'=>$pickedProduct->productQuantity-$orderDetails->quantity]);
-            // echo "<pre>"; print_r($orderDetails); die;
     		return redirect()->back()->with(compact('products', 'order', 'orderList'))->with('flash_message_success', 'Product has been added successfully');
     	}
-
-        // $levels = Category::where(['parent_id'=>0])->get();
-        
-
-        // echo "<pre>"; print_r($order); die;
     	return view('admin.orders.add_product')->with(compact('products', 'order', 'orderList'));
     }
 
     public function deleteProduct($id = null, $idp = null){
+        $order = OrderDetail::where(['orderId'=>$id, 'productId'=>$idp])->first();
+        $product = Product::where(['productId'=>$idp])->first();
+        Product::where(['productId'=>$idp])->update(['productQuantity'=>$product->productQuantity+$order->quantity]);
         OrderDetail::where(['orderId'=>$id, 'productId'=>$idp])->delete();
         return redirect()->back()->with('flash_message_success', 'Product has been deleted successfully');
     }
@@ -159,11 +144,8 @@ class OrdersController extends Controller
         // echo "<pre>"; print_r($orderList); die;
         $products = Product::where('productId', '>', 0)->get();
     	if($request->isMethod('post')){
-            
             $data = $request->all();      
-
             $pickedProduct = Product::where(['productId'=>$data['product_id']])->first();
-            
             $orderDetails = new OrderDetail;           
             $orderDetails->price = $pickedProduct->productPrice;
             $orderDetails->quantity = $data['quantity'];
@@ -188,28 +170,20 @@ class OrdersController extends Controller
                     
                 }
                 else{    
-                    // echo "<pre>"; print_r($checkOrder); die;
-                    // return 2;
                     $orderDetails->quantity = $data['quantity'] + $checkOrder->quantity;  
-                          
                     OrderDetail::where(['orderId'=>$id, 'productId'=>$data['product_id']])->delete();
-                    
                 }
                 $dif = -$data['quantity'];
-                // $orderDetails->quantity = $data['quantity'] + $checkOrder->quantity;        
                 $orderDetails->orderId = $id;
                 $orderDetails->productId = $data['product_id'];
                 $orderDetails->totalPrice = $orderDetails->quantity * $orderDetails->price;
+                $orderDetails->name = $pickedProduct->productName;
                 $orderDetails->save();
-            
             }
             Product::where(['productId'=>$pickedProduct->productId])->update(['productQuantity'=>$pickedProduct->productQuantity+$dif]);
             return redirect()->back()->with(compact('products', 'order', 'orderList'))->with('flash_message_success', 'Order has been updated successfully');
-
-        // $levels = Category::where(['parent_id'=>0])->get();
         }
 
-        // echo "<pre>"; print_r($order); die;
     	return view('admin.orders.edit_order_detail')->with(compact('products', 'order', 'orderList'));
     }
 

@@ -4,7 +4,7 @@
 
 <div id="content">
   <div id="content-header">
-    <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Orders</a> <a href="#" class="current">Add Order</a> </div>
+  <div id="breadcrumb"> <a href="/admin/dashboard" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Orders</a> <a href="#" class="current">Add Order</a> </div>
     <h1>Orders</h1>
     @if(Session::has('flash_message_error'))
             <div class="alert alert-error alert-block">
@@ -74,7 +74,7 @@
             <table class="table table-bordered data-table">
               <thead>
                 <tr>
-                  <th>Product ID</th>
+                  <th>Product</th>
                   <th>Quantity</th>
                   <th>Price</th>
                   <th>Total</th>
@@ -86,17 +86,17 @@
                   <tr class="gradeX">
                     <form method = "post" action="{{ url('admin/edit-order/'.$orderChild->orderId.'/edit-order-detail') }}">{{ csrf_field() }}
                       
-                        <td class="center"><input type="text" name="product_id0" id="product_id0" value = "{{ $orderChild->productId}}" required disabled>
+                        <td class="center"><input style = "width:90%;"type="text" name="product_id0" id="product_id0" value = "{{$orderChild->productId}} - {{$orderChild->name}}" required disabled> 
                         <input type="hidden" name="product_id" id="product_id" value = "{{ $orderChild->productId}}"  hidden = "hidden"></td>
                         
-                        <td class="center"><input type="number" name="quantity" id="quantity1"class="numberic_value1" value = "{{ $orderChild->quantity}}" required></td>
+                        <td class="center"><input style="width:50px;" type="number" name="quantity" id="quantity1"class="numberic_value1" value = "{{ $orderChild->quantity}}" required></td>
                         <input type ="hidden" name = "quantity1" id = "quantity1" value = "{{$orderChild->quantity}}" min = "1">
-                        <td class="center"><input type="number" name="price" id="price1" class="numberic_value1" value = "{{ $orderChild->price}}" disabled></td>
-                        <td class="center"><span type="number" name="total1" id="total1" value = "">{{ $orderChild->price*$orderChild->quantity}}</span></td>
+                        <td class="center"><input style="width:100px;" type="number" name="price" id="price1" class="numberic_value1" value = "{{ $orderChild->price}}" disabled></td>
+                        <td class="center"><span font-size = "15px" type="number" name="total1" id="total1" value = "">{{ $orderChild->price*$orderChild->quantity}}</span></td>
                         <td class="center">
                           <input type="hidden" name = "type_req" id = "type_req" value = "0"> 
                           <button  class="btn btn-primary btn-mini" type = "submit">Edit</button> 
-                          <a href=""  rel="{{$orderChild->productId}}" rel1="edit-order/{{ $order->orderId }}/delete-order-detail" href="javascript:" class="btn btn-danger btn-mini deleteRecord">Delete</a></td>                  </tr>
+                          <a href="delete-order-detail/{{$orderChild->productId}}" href="javascript:" class="btn btn-danger btn-mini deleteRecord">Delete</a></td>                  </tr>
                     </form>
                   @endforeach
                   <script>
@@ -129,17 +129,17 @@
                 <tr class="gradeX">
                   <form method = "post" action="{{ url('admin/edit-order/'.$order->orderId.'/edit-order-detail') }}">{{ csrf_field() }}
                   <td class="center">
-                    <select name = "product_id" id = "product_id" style = "width:220px;" class = "product_id" required>
+                    <select style = "width:90%;" name = "product_id" id = "product_id" style = "width:220px;" class = "product_id" required>
                       <option selected="selected" value ="" disabled>--</option>
                       @foreach($products as $product)
-                         <option value = "{{ $product->productId }}" product-price = "{{ $product->productPrice }}"> {{ $product->productId }}</option>
+                         <option value = "{{ $product->productId }}" product-price = "{{ $product->productPrice }}"> {{ $product->productId }} - {{$product->productName}}</option>
                       @endforeach
                     <select>
                     
                   </td>
-                  <td class="center"><input type="number" name="quantity" id="quantity"class="numberic_value" min = "1" required></td>
-                  <td class="center"><input type="number" name="price" id="price" class="numberic_value" disabled></td>
-                  <td class="center"><span type="number" name="total" id="total"></span></td>
+                  <td class="center"><input style="width:50px;" type="number" name="quantity" id="quantity"class="numberic_value" min = "1" required></td>
+                  <td class="center"><input style="width:100px;" type="number" name="price" id="price" class="numberic_value" disabled></td>
+                  <td class="center"><span font-size = "15px"type="number" name="total" id="total"></span></td>
                   <td class="center">
                     <input type="hidden" name = "type_req" id = "type_req" value = "1"> 
                     <button href="" class="btn btn-primary btn-mini" type = "submit">Add</button> 

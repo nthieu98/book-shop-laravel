@@ -4,7 +4,7 @@
 
 <div id="content">
   <div id="content-header">
-    <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Orders</a> <a href="#" class="current">Add Order</a> </div>
+  <div id="breadcrumb"> <a href="/admin/dashboard" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Orders</a> <a href="#" class="current">Add Order</a> </div>
     <h1>Orders</h1>
     @if(Session::has('flash_message_error'))
             <div class="alert alert-error alert-block">
@@ -74,10 +74,10 @@
             <table class="table table-bordered data-table">
               <thead>
                 <tr>
-                  <th>Product ID</th>
+                  <th>Product</th>
                   <th>Quantity</th>
                   <th>Price</th>
-                  <th>Total</th>
+                  <th style = "width:200px;">Total</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -85,7 +85,7 @@
                 @foreach($orderList as $orderChild)
                   <tr class="gradeX">
                   
-                    <td class="center">{{ $orderChild->productId }}</td>
+                    <td class="center">{{ $orderChild->productId }} - {{$orderChild->name}}</td>
                     <td class="center">{{ $orderChild->quantity }}</td>
                     <td class="center">{{ $orderChild->price }}</td>
                     <td class="center">{{ $orderChild->quantity * $orderChild->price }}</td>
@@ -97,16 +97,18 @@
                 <tr class="gradeX">
                   <form method = "post" action="{{ url('admin/add-order/'.$order->orderId.'/add-product') }}">{{ csrf_field() }}
                   <td class="center">
-                    <select name = "product_id" placeholder = "Product ID" id = "product_id" style = "width:220px;" class = "product_id" required>
-                      <option selected="selected" value ="" disabled>--</option>
-                      @foreach($products as $product)
-                         <option value = "{{ $product->productId }}" product-price = "{{ $product->productPrice }}"> {{ $product->productId }}</option>
+                    <select  name = "product_id" placeholder = "Product ID" id = "product_id" style = "width:400px;" class = "product_id"  required>
+                      <option value = "">Select</option>  
+                    @foreach($products as $product)
+                         <option value = "{{ $product->productId }}" product-price = "{{ $product->productPrice }}" product-name = "{{ $product->productName }}"> {{ $product->productId }} - {{$product->productName}}</option>
                       @endforeach
                     <select>
                   </td>
-                  <td class="center"><input type="number" name="quantity" id="quantity"class="numberic_value" min = "1" max = "{{$product->productQuantity}}"required></td>
+                 
+                   <!-- <td class="center"><input type="number" name="price" id="price" class="numberic_value" disabled></td> -->
+                  <td class="center"><input style = "width:100px" type="number" name="quantity" id="quantity"class="numberic_value" min = "1" max = "{{$product->productQuantity}}"required></td>
                   <td class="center"><input type="number" name="price" id="price" class="numberic_value" disabled></td>
-                  <td class="center"><span type="number" name="total" id="total"></span></td>
+                  <td class="center"><span style = "font-size:20px;" type="number" name="total" id="total"></span></td>
                   <td class="center">
                     <button href="" class="btn btn-primary btn-mini" type = "submit">Add</button> 
                 <form>
@@ -132,4 +134,5 @@
 
 <script src = "{{asset('js/getPriceOfProduct.js')}}"></script>
 <script src = "{{asset('js/autoCalTotal.js')}}"></script>
+
 @endsection

@@ -117,21 +117,68 @@
 				</div>
 		@endif
 		<div class="row-fluid">
-
+			<div class = "container">
 			<div class = "span9">
+				
 				@foreach ($orders as $order)
 					<form class = "well form-inline" method = "post" action="{{url('/checkout/'.Auth::user()->id )}}">
 						{{csrf_field()}}
 						<label style = "width:220px">
+							<h4>Order ID: {{$order->orderId}}</h4>
 							<h4>Address: {{$order->orderAddress}}</h4>
+							<h4>Date: {{date("d-m-Y", strtotime($order->orderDate)) }}</h4>
 							<h4>Status: {{$order->orderStatus}}</h4>
+							
 						</label>
-
+						@if($order->orderStatus == "Processing")
+							<label>
+								<a href="{{url('/cancel-order/'.Auth::user()->id.'/'.$order->orderId )}}" class="btn btn-danger" type = "submit">Cancel Order</a>
+							</label>
+						@else
+						@endif
+						@if($order->orderStatus != "Cancelled")
 						<label>
-							<a href="{{url('/cancel-order/'.Auth::user()->id.'/'.$order->orderId )}}" class="btn btn-danger" type = "submit">Cancel</a>
-						</label>
+						<div class = "container">
+							
+								<a class = "btn btn-success" data-toggle="collapse" data-target="#demo{{$order->orderId}}">View Details</a>
+						
+								<div id="demo{{$order->orderId}}" class="collapse">
+									<div class = "span6">
+										<table class="table table-striped">
+											<thead>
+												<tr>
+													<th>Product Name</th>
+													<th>Quantity</th>
+													<th>Price</th>
+													<th>Total</th>
+												</tr>
+											</thead>
+											<tbody>
+
+												@foreach($orderDetails as $orderDe)
+													@if($orderDe->orderId == $order->orderId)
+													<tr>
+														<td>{{$orderDe->name}}</td>
+														<td>{{$orderDe->quantity}}</td>
+														<td>{{$orderDe->price}} đ</td>
+														<td>{{$orderDe->quantity*$orderDe->price}} đ</td>
+													</tr>
+													@endif
+												@endforeach	
+
+											</tbody>	
+										
+										</table>
+										<h3> Total: {{$order->orderTotal}} đ</h3>
+									</div>
+								</div>
+						</div>
+						</label>	
+						@endif
 					</form>
+					
 				@endforeach
+				</div>
 			</div>
 		</div>
 	</section>
